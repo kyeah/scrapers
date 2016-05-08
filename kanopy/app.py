@@ -7,7 +7,7 @@ from getpass import getpass
 
 cert = certifi.where()
 login_url = "https://login.ezproxy.lib.utexas.edu/login?qurl=https%3a%2f%2futexas.kanopystreaming.com%2fcatalog"
-catalog_format = "https://utexas-kanopystreaming-com.ezproxy.lib.utexas.edu/catalog/?space=videos&page={}&rows=20&sort=most-popular"
+catalog_url = "https://utexas-kanopystreaming-com.ezproxy.lib.utexas.edu/catalog/?space=videos&page={}&rows=20&sort=most-popular"
 
 def login():
     browser = robobrowser.RoboBrowser()
@@ -21,7 +21,7 @@ def login():
 
 @asyncio.coroutine
 def scrape_titles(browser, page):
-    browser.open(catalog_format.format(0), verify=cert)
+    browser.open(catalog_url.format(page), verify=cert)
     titles = browser.select('.title')
     json_titles = [{'title': el.text, 'href': el.get('href')} for el in titles]
     return json_titles
