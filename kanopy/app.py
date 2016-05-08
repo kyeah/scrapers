@@ -11,6 +11,8 @@ base_url = "https://utexas-kanopystreaming-com.ezproxy.lib.utexas.edu"
 login_url = "https://login.ezproxy.lib.utexas.edu/login?qurl=https%3a%2f%2futexas.kanopystreaming.com%2fcatalog"
 catalog_url = "https://utexas-kanopystreaming-com.ezproxy.lib.utexas.edu/catalog/?space=videos&page={}&rows=20&sort=most-popular"
 
+output_filename = "titles.json"
+
 def login():
     browser = robobrowser.RoboBrowser()
     browser.open(login_url, verify=cert)
@@ -74,7 +76,7 @@ def update_titles(browser):
     return flattened
 
 def update_info(browser):
-    with open('titles.txt', 'r') as outfile:
+    with open(output_filename, 'r') as outfile:
         items = json.load(outfile)
         futures = [asyncio.ensure_future(scrape_info(browser, item, base_url + item['href']))
                    for item in items]
@@ -85,7 +87,7 @@ def update_info(browser):
 
         extracted = [future.result() for future in futures]
         return extracted
-        
+
 def main():
     
     if len(sys.argv) < 2:
@@ -100,8 +102,8 @@ def main():
     else:
         titles = update_info(browser)
 
-    shutil.copy('titles.txt', '.titles.txt')
-    with open('titles.txt', 'w') as outfile:
+    shutil.copy(output_filename, '.{}'.format(output_filename))
+    with open(output_filename, 'w') as outfile:
         json.dump(titles, outfile)
 
 if __name__ == '__main__':
