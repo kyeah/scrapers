@@ -4,6 +4,7 @@ import json
 import requests
 import robobrowser
 import shutil
+import sys
 from getpass import getpass
 
 cert = certifi.where()
@@ -102,7 +103,7 @@ def main():
     else:
         titles = update_info(browser)
 
-    shutil.copy(output_filename, '.{}'.format(output_filename))
+    shutil.copyfile(output_filename, '.{}'.format(output_filename))
     with open(output_filename, 'w') as outfile:
         json.dump(titles, outfile)
 
